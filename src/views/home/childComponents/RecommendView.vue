@@ -29,6 +29,7 @@
     text-align: center;
     padding-bottom: 5px;
     border-bottom: 6px solid #eeeeee;
+    background: #fff;
   }
   .recommend-item {
     flex: 1;

@@ -1,5 +1,7 @@
 <template>
-  <div class="tab-bar-item" @click="itemClick" :style="styleActive">
+  <div class="tab-bar-item"
+       @click="itemClick"
+       :style="styleActive">
     <slot v-if="itemActive" name="item-icon-active"></slot>
     <slot v-else name="item-icon"></slot>
     <slot name="item-text"></slot>
@@ -10,7 +12,7 @@
   import TabBar from "./TabBar";
   export default {
     name: "TabBarItem",
-    components: {TabBar},
+    components: { TabBar },
     //  接收父组件传递过来的值
     props: {
       //  接收传递的路径

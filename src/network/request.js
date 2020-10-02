@@ -4,7 +4,7 @@ export function request(config) {
 //  1: 创建axios的实例
   const instance = axios.create({
     baseURL: 'http://123.207.32.32:8000/api/h8',//  配置默认请求跟路径
-    timeout: 5000// 设置超时时间为5秒
+    timeout: 8000// 设置超时时间为5秒
   })
 
 //  2: axios的拦截器
