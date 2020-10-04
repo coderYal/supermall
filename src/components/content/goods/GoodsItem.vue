@@ -1,5 +1,5 @@
 <template>
-  <div class="goods-item">
+  <div class="goods-item" @click="goodsItemClick">
     <img :src="goodsItem.show.img" alt="" @load="itemImgLoad">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
@@ -24,6 +24,9 @@
       itemImgLoad() {
       //  监听图片加载完成, 然后利用事件总线, 发出事件, 让首页监听该事件
         this.$bus.$emit('itemImgLoad')
+      },
+      goodsItemClick() {
+        this.$router.push('/detail/' + this.goodsItem.iid)
       }
     }
   }

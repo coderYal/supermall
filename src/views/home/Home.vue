@@ -1,22 +1,22 @@
 <template>
   <div id="home">
-    <nav-bar class="home-nav">
-      <div slot="center">购物街</div>
-    </nav-bar>
+    <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
     <tab-control
       :tabControls="['流行', '新款', '精选']"
       @tabClick="tabClick"
       ref="tabControl1"
       class="tabControls"
       :class="{fixed: isFixed}"/>
-    <scroll class="content"
-            :probeType="3"
-            :pullUpLoad="true"
-            ref="scroll"
-            @scroll="scroll"
-            @pullingUp="pullingUp">
-      <HomeSwiper :banners="banners"
-                  @swiperItemImgLoad="swiperItemImgLoad" />
+    <scroll
+      class="content"
+      :probeType="3"
+      :pullUpLoad="true"
+      ref="scroll"
+      @scroll="scroll"
+      @pullingUp="pullingUp">
+      <HomeSwiper
+        :banners="banners"
+        @swiperItemImgLoad="swiperItemImgLoad" />
       <recommend-view :recommends="recommends" />
       <feature-view />
       <tab-control
@@ -25,8 +25,9 @@
         ref="tabControl2" />
       <goods :goods="goods[currentType].list" />
     </scroll>
-    <back-top v-show="currentShow"
-              @click.native="backClick" />
+    <back-top
+      v-show="currentShow"
+      @click.native="backClick" />
   </div>
 </template>
 

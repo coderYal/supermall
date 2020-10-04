@@ -7,7 +7,7 @@ const Home = () => import('views/home/Home')
 const CateGory = () => import('views/category/CateGory')
 const Cart = () => import('views/cart/Cart')
 const Mine = () => import('views/mine/Mine')
-
+const Detail = () => import('views/detail/Detail')
 
 const routes = [
   {
@@ -29,6 +29,11 @@ const routes = [
   {
     path: '/mine',
     component: Mine
+  },
+  {
+    //  配置动态路由
+    path: '/detail/:id',
+    component: Detail
   }
 ]
 
