@@ -10,16 +10,17 @@
       <detail-base-info :goods="goodsInfo" />
       <detail-shop-info :shop="shop" />
       <detail-goods-info
-        :detailInfo="detailInfo"
-        @goodsImgLoad="goodsImgLoad"/>
+        :detailInfo="detailInfo" />
       <detail-param-info :paramInfo="paramInfo" />
       <detail-comment-info :commentInfo="commentInfo" />
+      <goods :goods="recommends" />
     </scroll>
   </div>
 </template>
 
 <script>
   import Scroll from "components/common/scroll/Scroll";
+  import Goods from "components/content/goods/Goods"
 
   import DetailNavBar from "./childComponents/DetailNavBar";
   import DetailSwiper from "./childComponents/DetailSwiper";
@@ -29,8 +30,9 @@
   import DetailParamInfo from "./childComponents/DetailParamInfo";
   import DetailCommentInfo from "./childComponents/DetailCommentInfo";
 
-  import { getDetail, Goods, Shop } from "network/detail";
+  import { getDetail, getDetailRecommend, GoodsInfo, Shop } from "network/detail";
   import { debounce } from "common/utils";
+  import { itemListenerMixin } from "common/mixin";
   export default {
     name: "Detail",
     data() {
@@ -41,10 +43,12 @@
         shop: {},
         detailInfo: {},
         paramInfo: {},
-        commentInfo: {}
+        commentInfo: {},
+        recommends: []
       }
     },
     components: {
+      Goods,
       DetailCommentInfo,
       DetailShopInfo,
       Scroll,
@@ -61,7 +65,7 @@
         //  1: 轮播图数据
         this.topImages = data.itemInfo.topImages
         //  2: 创建商品的对象
-        this.goodsInfo = new Goods(data.itemInfo, data.columns, data.shopInfo.services)
+        this.goodsInfo = new GoodsInfo(data.itemInfo, data.columns, data.shopInfo.services)
         //  3: 创建店铺的对象
         this.shop = new Shop(data.shopInfo)
         //  4: 详情的信息
@@ -73,14 +77,21 @@
           this.commentInfo = data.rate.list[0]
         }
       })
+
+      getDetailRecommend().then(res => {
+        this.recommends = res.data.list
+      })
     },
     methods: {
       itemImageLoad() {
         this.$refs.scroll.refresh()
-      },
-      goodsImgLoad() {
-        debounce(this.$refs.scroll.refresh(), 100)
       }
+    },
+    mixins: [itemListenerMixin],
+    //  组件被销毁后调用该钩子函数, 如果组件被缓存就不调用这个
+    destroyed() {
+      //  离开组件注销全局图片加载完成监听事件
+      this.$bus.$off('itemImgLoad', this.itemImgListener)
     }
   }
 </script>

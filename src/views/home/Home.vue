@@ -44,6 +44,7 @@
 
   import { getHomeMultidata, getHomeGoods } from "network/home";
   import { debounce } from "common/utils"
+  import { itemListenerMixin } from "common/mixin";
   export default {
     name: "Home",
     data() {
@@ -143,14 +144,8 @@
         this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop
       }
     },
-    mounted() {
-      //  1: 使用防抖函数, 80秒之内如果要重新计算高度, 就会去除上次操作, 不会重新计算, 反之重新计算高度
-      const refresh = debounce(this.$refs.scroll.refresh, 80)
-      this.$bus.$on('itemImgLoad', () => {
-        //  调用防抖函数
-        refresh()
-      })
-    },
+    //  使用混入, 将全局监听图片加载完成事件总线功能使用混入, 各个组件都可以使用
+    mixins: [itemListenerMixin],
     //  在组件被缓存的时候, 进入home组件的回调
     activated() {
     //  进入到home组件 就让滚动插件的位置等于上次离开home组件的位置
@@ -160,6 +155,8 @@
     deactivated() {
       //  离开home组件就记录当前滚动插件滚动的距离
       this.scrollY = this.$refs.scroll.scrollY()
+      //  离开取消全局事件的监听
+      this.$bus.$off('itemImgLoad', this.itemImgListener)
     }
   }
 </script>

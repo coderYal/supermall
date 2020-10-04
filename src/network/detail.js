@@ -9,8 +9,14 @@ export function getDetail(iid) {
   })
 }
 
+export function getDetailRecommend() {
+  return request({
+    url: '/recommend'
+  })
+}
+
 //  商品的数据整合
-export class Goods {
+export class GoodsInfo {
   constructor(itemInfo, columns, services) {
     this.title = itemInfo.title;
     this.desc = itemInfo.desc;
