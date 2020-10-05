@@ -36,15 +36,13 @@
   import TabControl from "components/content/tabControl/TabControl";
   import Goods from "components/content/goods/Goods";
   import Scroll from "components/common/scroll/Scroll";
-  import BackTop from "components/common/backTop/BackTop";
 
   import HomeSwiper from "./childComponents/HomeSwiper";
   import RecommendView from "./childComponents/RecommendView";
   import FeatureView from "./childComponents/FeatureView";
 
   import { getHomeMultidata, getHomeGoods } from "network/home";
-  import { debounce } from "common/utils"
-  import { itemListenerMixin } from "common/mixin";
+  import { itemListenerMixin, backTopMixin } from "common/mixin";
   export default {
     name: "Home",
     data() {
@@ -57,7 +55,6 @@
           'sell': {page: 0, list: []}
         },
         currentType: 'pop',// 三个大类点击分别显示不同商品,默认为pop的标记
-        currentShow: false,// 用来控制backtop回到顶部是否显示 默认不显示
         tabOffsetTop: 0,// 记录tabControl距离上方的位置
         isFixed: false,// 记录tabControl是否可以吸顶
         scrollY: 0,// 记录离开时滚动的距离
@@ -70,8 +67,7 @@
       FeatureView,
       TabControl,
       Goods,
-      Scroll,
-      BackTop
+      Scroll
     },
     created() {
       //  1: 请求轮播图数据和推荐信息数据
@@ -126,15 +122,17 @@
       //  2: 监听滚动插件的滚动距离
       scroll(position) {
         //  2.1: 如果距离大于1000, 就显示回到顶部
+        //  使用混入backTop, 但是混入不会合并methods方法内的具体, 只会合并methods内的方法
         this.currentShow = -(position.y) > 1000
         //  2.2: 如果滚动距离大于tabControl距离顶部的距离 就设置fixed为true
         this.isFixed = -(position.y) > this.tabOffsetTop
       },
       //  3: 监听回调顶部的点击
-      backClick() {
-      //  调用滚动插件内部封装好的方法, 传入x和y及过度时间(过度时间默认为300毫米, 可不传)
-        this.$refs.scroll.scrollToXAndY(0, 0)
-      },
+      //  使用混入, 就不需要该方法了
+      // backClick() {
+      // //  调用滚动插件内部封装好的方法, 传入x和y及过度时间(过度时间默认为300毫米, 可不传)
+      //   this.$refs.scroll.scrollToXAndY(0, 0)
+      // },
       //  4: 监听滚动插件发出的事件, 上拉加载更多, 每次上拉加载过后, 要重新刷新一下滚动插件, 重新计算高度, 否则不会触发下次的上拉加载更多
       pullingUp() {
         this.getHomeGoods(this.currentType)
@@ -145,7 +143,7 @@
       }
     },
     //  使用混入, 将全局监听图片加载完成事件总线功能使用混入, 各个组件都可以使用
-    mixins: [itemListenerMixin],
+    mixins: [itemListenerMixin, backTopMixin],
     //  在组件被缓存的时候, 进入home组件的回调
     activated() {
     //  进入到home组件 就让滚动插件的位置等于上次离开home组件的位置

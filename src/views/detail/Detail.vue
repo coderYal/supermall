@@ -27,6 +27,9 @@
         :goods="recommends"
         ref="detailRecommends"/>
     </scroll>
+    <back-top
+      v-show="currentShow"
+      @click.native="backClick" />
   </div>
 </template>
 
@@ -44,7 +47,7 @@
 
   import { getDetail, getDetailRecommend, GoodsInfo, Shop } from "network/detail";
   import { debounce } from "common/utils";
-  import { itemListenerMixin } from "common/mixin";
+  import { itemListenerMixin, backTopMixin } from "common/mixin";
   export default {
     name: "Detail",
     data() {
@@ -132,9 +135,12 @@
             this.$refs.detailNavBar.currentIndex = this.currentIndex
           }
         }
+        //  如果距离大于1000, 就显示回到顶部
+        //  使用混入backTop, 但是混入不会合并methods方法内的具体, 只会合并methods内的方法
+        this.currentShow = -(position.y) > 1000
       }
     },
-    mixins: [itemListenerMixin],
+    mixins: [itemListenerMixin, backTopMixin],
     //  组件被销毁后调用该钩子函数, 如果组件被缓存就不调用这个
     destroyed() {
       //  离开组件注销全局图片加载完成监听事件
