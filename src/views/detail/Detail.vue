@@ -30,6 +30,7 @@
     <back-top
       v-show="currentShow"
       @click.native="backClick" />
+    <detail-bottom-bar />
   </div>
 </template>
 
@@ -44,6 +45,7 @@
   import DetailGoodsInfo from "./childComponents/DetailGoodsInfo";
   import DetailParamInfo from "./childComponents/DetailParamInfo";
   import DetailCommentInfo from "./childComponents/DetailCommentInfo";
+  import DetailBottomBar from "./childComponents/DetailBottomBar";
 
   import { getDetail, getDetailRecommend, GoodsInfo, Shop } from "network/detail";
   import { debounce } from "common/utils";
@@ -74,7 +76,8 @@
       DetailSwiper,
       DetailNavBar,
       DetailGoodsInfo,
-      DetailParamInfo
+      DetailParamInfo,
+      DetailBottomBar
     },
     created() {
       this.id = this.$route.params.id
@@ -162,6 +165,6 @@
     position: relative;
     z-index: 9;
     background-color: #fff;
-    height: calc(100% - 44px);
+    height: calc(100% - 44px - 58px);
   }
 </style>
