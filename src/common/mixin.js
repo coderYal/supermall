@@ -7,7 +7,7 @@ export const itemListenerMixin = {
     }
   },
   mounted() {
-    //  1: 使用防抖函数, 80秒之内如果要重新计算高度, 就会去除上次操作, 不会重新计算, 反之重新计算高度
+    //  1: 使用防抖函数, 100秒之内如果要重新计算高度, 就会去除上次操作, 不会重新计算, 反之重新计算高度
     const refresh = debounce(this.$refs.scroll.refresh)
     this.itemImgListener = () => {
       refresh()//  调用防抖函数

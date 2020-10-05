@@ -1,19 +1,31 @@
 <template>
   <div class="detail">
-    <detail-nav-bar class="detail-nav-bar" />
+    <detail-nav-bar
+      class="detail-nav-bar"
+      @titleClick="titleClick"
+      ref="detailNavBar"/>
     <scroll
       class="center"
-      ref="scroll">
+      ref="scroll"
+      :probeType="3"
+      @scroll="scrollPosition">
       <detail-swiper
         :top-images="topImages"
         @itemImageLoad="itemImageLoad"/>
       <detail-base-info :goods="goodsInfo" />
       <detail-shop-info :shop="shop" />
       <detail-goods-info
-        :detailInfo="detailInfo" />
-      <detail-param-info :paramInfo="paramInfo" />
-      <detail-comment-info :commentInfo="commentInfo" />
-      <goods :goods="recommends" />
+        :detailInfo="detailInfo"
+        @itemImgLoadEmit="itemImgLoadEmit"/>
+      <detail-param-info
+        :paramInfo="paramInfo"
+        ref="detailParam"/>
+      <detail-comment-info
+        :commentInfo="commentInfo"
+        ref="detailComment"/>
+      <goods
+        :goods="recommends"
+        ref="detailRecommends"/>
     </scroll>
   </div>
 </template>
@@ -44,7 +56,10 @@
         detailInfo: {},
         paramInfo: {},
         commentInfo: {},
-        recommends: []
+        recommends: [],
+        themeTopYs: [],// 存储商品,参数,评论,推荐对应的offsetTop值
+        getThemeTopY: null,// 防抖函数, 监听商品图片的加载完成
+        currentIndex: null,// 用来存放每次滚动到某个位置的index值
       }
     },
     components: {
@@ -82,9 +97,41 @@
         this.recommends = res.data.list
       })
     },
+    mounted() {
+      this.getThemeTopY = debounce(() => {
+        //  每次先把数组赋值为空, 因为防抖会多次执行, 不把上一次的清空就会push多余的数据
+        this.themeTopYs = []
+        this.themeTopYs.push(0)
+        this.themeTopYs.push(this.$refs.detailParam.$el.offsetTop)
+        this.themeTopYs.push(this.$refs.detailComment.$el.offsetTop)
+        this.themeTopYs.push(this.$refs.detailRecommends.$el.offsetTop)
+        this.themeTopYs.push(Number.MAX_VALUE)
+      }, 100)
+    },
     methods: {
+      //  监听轮播图加载完成然后刷新滚动插件重新计算高度
       itemImageLoad() {
         this.$refs.scroll.refresh()
+      },
+      //  详情商品图片加载完成接收
+      itemImgLoadEmit() {
+        this.getThemeTopY()
+      },
+      //  子组件NavBar点击跳转到对应的位置
+      titleClick(index) {
+        this.$refs.scroll.scrollToXAndY(0, -this.themeTopYs[index], 100)
+      },
+      //  监听滚动插件滚动的位置
+      scrollPosition(position) {
+        const positionY = -(position.y)
+        //  遍历商品参数评论和推荐四个功能块的offsetTop值
+        for (let i in this.themeTopYs) {
+          //  拿滚动的距离和第i个和第i+1个比较, 然后获得index赋值给navbar的currentIndex
+          if ((this.currentIndex !== i) && (positionY >= this.themeTopYs[i] && positionY <= this.themeTopYs[parseInt(i)+1])) {
+            this.currentIndex = parseInt(i)
+            this.$refs.detailNavBar.currentIndex = this.currentIndex
+          }
+        }
       }
     },
     mixins: [itemListenerMixin],

@@ -27,6 +27,7 @@
     methods: {
       goodsImgLoad() {
         this.$bus.$emit('itemImgLoad')
+        this.$emit('itemImgLoadEmit')
       }
     }
 	}

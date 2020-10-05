@@ -55,7 +55,6 @@
       },
       //  3: 调用refresh()重新计算高度, dom结构发生变化就要重新计算高度
       refresh() {
-        console.log('--');
         this.scroll && this.scroll.refresh()
       },
       //  4: 滚动插件滚动的距离
