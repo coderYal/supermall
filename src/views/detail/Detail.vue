@@ -30,7 +30,7 @@
     <back-top
       v-show="currentShow"
       @click.native="backClick" />
-    <detail-bottom-bar />
+    <detail-bottom-bar @addToCart="addToCart" />
   </div>
 </template>
 
@@ -104,6 +104,7 @@
       })
     },
     mounted() {
+      //  获取4个类别的offsetTop使用防抖保存在data中
       this.getThemeTopY = debounce(() => {
         //  每次先把数组赋值为空, 因为防抖会多次执行, 不把上一次的清空就会push多余的数据
         this.themeTopYs = []
@@ -141,6 +142,18 @@
         //  如果距离大于1000, 就显示回到顶部
         //  使用混入backTop, 但是混入不会合并methods方法内的具体, 只会合并methods内的方法
         this.currentShow = -(position.y) > 1000
+      },
+      //  监听加入购物车
+      addToCart() {
+        console.log('加入购物车');
+        console.log(this.goodsInfo);
+        const product = {}
+        product.img = this.topImages[0]
+        product.title = this.goodsInfo.title
+        product.desc = this.goodsInfo.desc
+        product.realPrice = this.goodsInfo.realPrice
+        product.id = this.id
+        this.$store.dispatch('addToCart', product)
       }
     },
     mixins: [itemListenerMixin, backTopMixin],
