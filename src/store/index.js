@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 
 import actions from "./actions"
 import mutations from "./mutations"
+import getters from "./getters"
 
 //  1: 安装插件
 Vue.use(Vuex)
@@ -18,7 +19,8 @@ const store = new Vuex.Store({
   //  注意: 尽量一个方法只做一个状态的改变, 比如一个方法对应数量加一, 一个方法对应添加到购物车
   mutations,
   //  通过actions做一些逻辑的判断和异步修改状态的操作
-  actions
+  actions,
+  getters
 })
 
 //  3: 挂载到实例上

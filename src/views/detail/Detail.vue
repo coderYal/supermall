@@ -145,15 +145,15 @@
       },
       //  监听加入购物车
       addToCart() {
-        console.log('加入购物车');
-        console.log(this.goodsInfo);
         const product = {}
         product.img = this.topImages[0]
         product.title = this.goodsInfo.title
         product.desc = this.goodsInfo.desc
         product.realPrice = this.goodsInfo.realPrice
         product.id = this.id
-        this.$store.dispatch('addToCart', product)
+        this.$store.dispatch('addToCart', product).then(res => {
+          res.code === 200
+        })
       }
     },
     mixins: [itemListenerMixin, backTopMixin],
